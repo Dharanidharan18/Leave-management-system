@@ -30,7 +30,6 @@ public class Employee implements EmployeeDAO{
 	    return true;
 	}
 		
-
 	public  boolean loginUser(int userId, String password) throws ClassNotFoundException, SQLException {
 	    Connection connection =  DataBaseConnection2.getConnection();
 
@@ -75,8 +74,7 @@ public class Employee implements EmployeeDAO{
             System.out.println("User Id: " + resultSet.getInt("userId") + ", Name: " + resultSet.getString("name"));
         }
     }
-    
-    
+        
     public void storeLeaveDetails(String leaveType, int duration, Date startDate, Date endDate) throws ClassNotFoundException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;

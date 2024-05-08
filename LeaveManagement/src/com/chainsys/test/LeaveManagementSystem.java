@@ -1,5 +1,6 @@
 package com.chainsys.test;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -102,21 +103,22 @@ public class LeaveManagementSystem {
 
 							System.out.print("Enter Password : ");
 							password = scanner.next();
+							 while (!Pass.isValidPassword(password)) {
+				                    System.out.println(
+				                            "inValid password !,password should have 1 specail character, number ,capital  example:#Password123 ");
+				                    password = scanner.next();
+				                }
 
 							if(e.registerUser(userId, name, password)==true) {
 								e.insertEmployee(userId,name,password);
 							}
 							scanner.nextLine();
-							break;
-						
+							break;				
 				
 						}
 
-//						leavemanagement();
 					}
 					
-					
-
 				case 3:
 					System.out.println("Exiting...");
 					scanner.close();
@@ -211,8 +213,7 @@ public class LeaveManagementSystem {
 	            }
 			}
 		
-
-		
+	
 		public static void grantLeave(String leaveType, int duration) {
 
 			System.out.println("\nLeave granted successfully for Employee ID: \n");
@@ -236,10 +237,29 @@ public class LeaveManagementSystem {
 	        }
 	        return date;
 	    }
+		
+		
+		public static Timestamp getTimestamp() {
+		    Scanner scanner = new Scanner(System.in);
+		    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // Define format including time
+
+		    Timestamp timestamp = null;
+		    while (timestamp == null) {
+		        System.out.println("Enter timestamp yyyy-MM-dd HH:mm:ss:");
+		        String timestampInput = scanner.nextLine();
+		        try {
+		            
+		            timestamp = new Timestamp(dateFormat.parse(timestampInput).getTime());
+		        } catch (ParseException e) {
+		            System.out.println("Invalid timestamp format. Please enter timestamp in yyyy-MM-dd HH:mm:ss format.");
+		        }
+		    }
+		    return timestamp;
+		}
 	
 		
 }
 }
-
+    
 	
 	
