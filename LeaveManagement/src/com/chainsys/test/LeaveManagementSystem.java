@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 import com.chainsys.dao.Employee;
 
-
 public class LeaveManagementSystem {
 
 		public static void leavemanagement(int userId) throws ClassNotFoundException {
