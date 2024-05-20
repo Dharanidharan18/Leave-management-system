@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import com.chainsys.util.DataBaseConnection2;
@@ -75,7 +76,7 @@ public class Employee implements EmployeeDAO{
         }
     }
         
-    public void storeLeaveDetails(String leaveType, int duration, Date startDate, Date endDate) throws ClassNotFoundException {
+    public void storeLeaveDetails(String leaveType, int duration, Date startDate, Date endDate,int userId ) throws ClassNotFoundException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
@@ -95,7 +96,36 @@ public class Employee implements EmployeeDAO{
                 preparedStatement.setNull(4, java.sql.Types.DATE);
             }
             
-            preparedStatement.setInt(5, 1003); 
+            preparedStatement.setInt(5,userId); 
+            
+            int rows = preparedStatement.executeUpdate();
+            System.out.println(rows + " rows inserted");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } 
+    }
+    
+    public void storeLeaveDetailsPermission(String leaveType, int duration, Timestamp startTime, Timestamp endTime,int userId ) throws ClassNotFoundException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = DataBaseConnection2.getConnection();
+            String insertQuery = "INSERT INTO leavemanagement (leave_type, permission_timings, startTime, endTime, userId) VALUES (?, ?, ?, ?, ?)";
+            preparedStatement = connection.prepareStatement(insertQuery);
+            preparedStatement.setString(1, leaveType);
+            preparedStatement.setInt(2, duration);
+            if (startTime != null) {
+                preparedStatement.setTime(3, new java.sql.Time(startTime.getTime()));
+            } else {
+                preparedStatement.setNull(3, java.sql.Types.TIME);
+            }
+            if (endTime != null) {
+                preparedStatement.setTime(4, new java.sql.Time(endTime.getTime()));
+            } else {
+                preparedStatement.setNull(4, java.sql.Types.TIME);
+            }
+            
+            preparedStatement.setInt(5, userId); 
             
             int rows = preparedStatement.executeUpdate();
             System.out.println(rows + " rows inserted");

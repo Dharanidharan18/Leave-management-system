@@ -1,5 +1,6 @@
 package com.chainsys.test;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,7 +12,7 @@ import com.chainsys.dao.Employee;
 
 public class LeaveManagementSystem {
 
-		public static void leavemanagement() throws ClassNotFoundException {
+		public static void leavemanagement(int userId) throws ClassNotFoundException {
 			Scanner scanner = new Scanner(System.in);
 			
 			while (true) {
@@ -26,7 +27,7 @@ public class LeaveManagementSystem {
 
 				case 1:
 
-					Leave.canGrantLeave();
+					Leave.canGrantLeave(userId);
 					scanner.nextLine();
 					break;
 
@@ -67,7 +68,7 @@ public class LeaveManagementSystem {
 					String password = scanner.next();			
 					if (e.loginUser(userId, password)) {
 
-						leavemanagement();
+						leavemanagement(userId);
 					}
 
 					break;
@@ -103,7 +104,7 @@ public class LeaveManagementSystem {
 
 							System.out.print("Enter Password : ");
 							password = scanner.next();
-							 while (!Pass.isValidPassword(password)) {
+							 while (!PasswordValidator.isValidPassword(password)) {
 				                    System.out.println(
 				                            "inValid password !,password should have 1 specail character, number ,capital  example:#Password123 ");
 				                    password = scanner.next();
@@ -154,7 +155,7 @@ public class LeaveManagementSystem {
 
 	class Leave {
 
-		public static void canGrantLeave() throws ClassNotFoundException {
+		public static void canGrantLeave(int userId) throws ClassNotFoundException {
 			Scanner scanner = new Scanner(System.in);
 			System.out.print("Enter leave type (SICK LEAVE, CASUAL LEAVE, PERMISSION): ");
 			String leaveType = scanner.nextLine().toUpperCase();
@@ -170,6 +171,32 @@ public class LeaveManagementSystem {
 					duration = scanner.nextInt();
 					grantLeave(leaveType, duration);
 				}
+				
+				System.out.print("Enter start time (HH:mm): ");
+	            Timestamp startTime = getTimestamp();
+	            System.out.print("Enter end time (HH:mm): ");
+	            Timestamp endTime = getTimestamp();
+				
+				 while(true) {
+		            	
+			            if (startTime.after(endTime)) {
+			                System.out.println("End time cannot be before start time.");
+			                System.out.print("Enter start time (HH:mm ): ");
+				             startTime = getTimestamp();
+				            System.out.print("Enter end time (HH:mm): ");
+				             endTime = getTimestamp();
+			            }  else {
+			                
+//			                long diff = endTime.getTime() - startTime.getTime();
+//			                duration = (int) (diff / (24 * 60 * 60 * 1000)); 
+			                Employee employee = new Employee();			
+							employee.storeLeaveDetailsPermission(leaveType, duration, startTime, endTime,userId);
+							System.out.println(duration);
+							grantLeave(leaveType, duration);
+							break;
+			            }
+			            }
+			            			
 			} else {
 				
 				System.out.print("Enter duration of leave (in days): ");
@@ -203,12 +230,12 @@ public class LeaveManagementSystem {
 	                long diff = endDate.getTime() - startDate.getTime();
 	                duration = (int) (diff / (24 * 60 * 60 * 1000)); 
 	                Employee employee = new Employee();			
-					employee.storeLeaveDetails(leaveType, duration, startDate, endDate);
+					employee.storeLeaveDetails(leaveType, duration, startDate, endDate,userId);
 					grantLeave(leaveType, duration);
+					System.out.println(duration);
 					break;
 	            }
-	            }
-	            
+	            }	            
 				
 	            }
 			}
@@ -241,25 +268,20 @@ public class LeaveManagementSystem {
 		
 		public static Timestamp getTimestamp() {
 		    Scanner scanner = new Scanner(System.in);
-		    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // Define format including time
+		    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm"); 
 
 		    Timestamp timestamp = null;
 		    while (timestamp == null) {
-		        System.out.println("Enter timestamp yyyy-MM-dd HH:mm:ss:");
+		        System.out.println("Enter timestamp  HH:mm");
 		        String timestampInput = scanner.nextLine();
 		        try {
 		            
 		            timestamp = new Timestamp(dateFormat.parse(timestampInput).getTime());
 		        } catch (ParseException e) {
-		            System.out.println("Invalid timestamp format. Please enter timestamp in yyyy-MM-dd HH:mm:ss format.");
+		            System.out.println("Invalid timestamp format. Please enter timestamp in HH:mm:ss format.");
 		        }
 		    }
 		    return timestamp;
-		}
-	
-		
+		}		
 }
-}
-    
-	
-	
+}	
